@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vestia — Fashion Online</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
+
+  <header>
+    <a href="index.html" class="logo">VESTIA</a>
+    <nav>
+      <a href="index.html" class="active">Beranda</a>
+      <a href="products.html">Koleksi</a>
+      <a href="cart.html" class="cart-link">
+        Keranjang <span class="cart-badge" id="cart-count">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-tag">Koleksi 2026</span>
+      <h1>Elevate Your <em>Everyday</em> Style</h1>
+      <p>Fashion premium untuk pria & wanita. Temukan gaya yang mencerminkan dirimu.</p>
+      <div class="hero-buttons">
+        <a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a>
+        <a href="products.html" class="btn btn-outline">Lihat Promo</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="label">Kategori</span>
+      <h2>Shop by Style</h2>
+    </div>
+    <div class="categories">
+      <a href="products.html" class="cat-card pria" onclick="localStorage.setItem('vestia_filter','pria')">
+        <span>Pria<small>12+ produk</small></span>
+      </a>
+      <a href="products.html" class="cat-card wanita" onclick="localStorage.setItem('vestia_filter','wanita')">
+        <span>Wanita<small>18+ produk</small></span>
+      </a>
+      <a href="products.html" class="cat-card aksesoris" onclick="localStorage.setItem('vestia_filter','aksesoris')">
+        <span>Aksesoris<small>8+ produk</small></span>
+      </a>
+    </div>
+
+    <div class="section-header">
+      <span class="label">Unggulan</span>
+      <h2>Produk Pilihan</h2>
+      <p>Kurasi terbaik dari tim stylist Vestia</p>
+    </div>
+    <div class="grid" id="featured-products"></div>
+  </section>
+
+  <section class="newsletter">
+    <h3>Join the Vestia Club</h3>
+    <p>Dapatkan akses eksklusif ke koleksi baru & diskon 15%</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Email kamu...">
+      <button onclick="showToast('Terima kasih sudah subscribe! ✓')">Daftar</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">VESTIA</div>
+    <p>© 2026 Vestia. Prototype Website Penjualan Fashion.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    document.getElementById("featured-products").innerHTML =
+      products.slice(0, 3).map(renderProductCard).join("");
+  </script>
+</body>
+</html>

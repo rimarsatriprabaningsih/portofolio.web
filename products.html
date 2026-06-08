@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koleksi — Vestia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
+
+  <header>
+    <a href="index.html" class="logo">VESTIA</a>
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="products.html" class="active">Koleksi</a>
+      <a href="cart.html" class="cart-link">
+        Keranjang <span class="cart-badge" id="cart-count">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="page-hero">
+    <h1>Koleksi Kami</h1>
+    <p>Temukan gaya terbaikmu dari kurasi Vestia</p>
+  </div>
+
+  <section class="section">
+    <div class="filters">
+      <button class="active" onclick="filterProducts('all', this)">Semua</button>
+      <button onclick="filterProducts('pria', this)">Pria</button>
+      <button onclick="filterProducts('wanita', this)">Wanita</button>
+      <button onclick="filterProducts('aksesoris', this)">Aksesoris</button>
+    </div>
+
+    <div class="grid" id="product-list"></div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">VESTIA</div>
+    <p>© 2026 Vestia. Prototype Website Penjualan Fashion.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    function filterProducts(category, btn) {
+      document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const filtered = category === "all"
+        ? products
+        : products.filter(p => p.category === category);
+      document.getElementById("product-list").innerHTML =
+        filtered.map(renderProductCard).join("");
+    }
+
+    const saved = localStorage.getItem("vestia_filter");
+    if (saved) {
+      const btn = document.querySelector(`.filters button[onclick*="${saved}"]`);
+      if (btn) filterProducts(saved, btn);
+      else filterProducts("all", document.querySelector(".filters button"));
+      localStorage.removeItem("vestia_filter");
+    } else {
+      filterProducts("all", document.querySelector(".filters button"));
+    }
+  </script>
+</body>
+</html>

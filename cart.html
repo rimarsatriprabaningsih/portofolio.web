@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keranjang — Vestia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
+
+  <header>
+    <a href="index.html" class="logo">VESTIA</a>
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="products.html">Koleksi</a>
+      <a href="cart.html" class="active cart-link">
+        Keranjang <span class="cart-badge" id="cart-count">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <div class="page-hero">
+    <h1>Keranjang Belanja</h1>
+    <p>Review pesananmu sebelum checkout</p>
+  </div>
+
+  <section class="section">
+    <div id="cart-content"></div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">VESTIA</div>
+    <p>© 2026 Vestia. Prototype Website Penjualan Fashion.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    function renderCart() {
+      const cart = getCart();
+      const container = document.getElementById("cart-content");
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="emoji">🛍️</div>
+            <h3>Keranjang masih kosong</h3>
+            <p>Yuk, temukan fashion favoritmu di koleksi kami</p>
+            <a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a>
+          </div>`;
+        return;
+      }
+
+      const itemsHtml = cart.map(item => `
+        <div class="cart-item">
+          <div class="emoji">${item.image}</div>
+          <div class="info">
+            <div class="item-cat">${item.category}</div>
+            <h4>${item.name}</h4>
+            <div class="item-price">${formatRupiah(item.price)}</div>
+          </div>
+          <div class="qty-control">
+            <button onclick="updateQty(${item.id}, -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateQty(${item.id}, 1)">+</button>
+          </div>
+          <button class="btn-remove" onclick="removeFromCart(${item.id})">Hapus</button>
+        </div>
+      `).join("");
+
+      const total = getCartTotal();
+
+      container.innerHTML = itemsHtml + `
+        <div class="cart-summary">
+          <div class="row">
+            <span>Subtotal (${cart.reduce((s, i) => s + i.qty, 0)} item)</span>
+            <span>${formatRupiah(total)}</span>
+          </div>
+          <div class="row">
+            <span>Ongkir</span>
+            <span>${total >= 500000 ? "Gratis" : "Rp 25.000"}</span>
+          </div>
+          <div class="total">
+            <span>Total</span>
+            <span>${formatRupiah(total >= 500000 ? total : total + 25000)}</span>
+          </div>
+          <a href="checkout.html" class="btn btn-dark" style="display:block;text-decoration:none;padding:1rem">
+            Lanjut Checkout →
+          </a>
+        </div>`;
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
