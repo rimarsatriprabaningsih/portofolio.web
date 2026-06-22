@@ -6,63 +6,86 @@
   <title>Koleksi — Vestia</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
-
-  <header>
-    <a href="index.html" class="logo">VESTIA</a>
-    <nav>
-      <a href="index.html">Beranda</a>
-      <a href="products.html" class="active">Koleksi</a>
-      <a href="cart.html" class="cart-link">
-        Keranjang <span class="cart-badge" id="cart-count">0</span>
-      </a>
-    </nav>
-  </header>
-
-  <div class="page-hero">
-    <h1>Koleksi Kami</h1>
-    <p>Temukan gaya terbaikmu dari kurasi Vestia</p>
+<div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
   </div>
-
+</div>
+<body>
+  <!-- PASTE HEADER -->
+  <div class="page-hero"><h1>Koleksi Kami</h1><p>8 produk fashion pilihan terbaik</p></div>
   <section class="section">
-    <div class="filters">
-      <button class="active" onclick="filterProducts('all', this)">Semua</button>
-      <button onclick="filterProducts('pria', this)">Pria</button>
-      <button onclick="filterProducts('wanita', this)">Wanita</button>
-      <button onclick="filterProducts('aksesoris', this)">Aksesoris</button>
+    <div class="toolbar">
+      <div class="filters">
+        <button class="active" onclick="filterCat('all',this)">Semua</button>
+        <button onclick="filterCat('pria',this)">Pria</button>
+        <button onclick="filterCat('wanita',this)">Wanita</button>
+        <button onclick="filterCat('aksesoris',this)">Aksesoris</button>
+      </div>
+      <select class="sort-select" onchange="sortProducts(this.value)">
+        <option value="default">Urutkan</option>
+        <option value="price-asc">Harga ↑</option>
+        <option value="price-desc">Harga ↓</option>
+        <option value="rating">Rating</option>
+      </select>
     </div>
-
     <div class="grid" id="product-list"></div>
   </section>
-
-  <footer>
-    <div class="footer-logo">VESTIA</div>
-    <p>© 2026 Vestia.</p>
-  </footer>
-
+  <footer><div class="footer-bottom">© 2026 Vestia</div></footer>
   <script src="app.js"></script>
   <script>
-    function filterProducts(category, btn) {
+    let currentList = [...products];
+    function renderList(list) {
+      document.getElementById("product-list").innerHTML = list.map(renderProductCard).join("");
+    }
+    function filterCat(cat, btn) {
       document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const filtered = category === "all"
-        ? products
-        : products.filter(p => p.category === category);
-      document.getElementById("product-list").innerHTML =
-        filtered.map(renderProductCard).join("");
+      currentList = cat === "all" ? [...products] : products.filter(p => p.category === cat);
+      renderList(currentList);
     }
-
+    function sortProducts(val) {
+      let list = [...currentList];
+      if (val === "price-asc") list.sort((a,b) => a.price - b.price);
+      else if (val === "price-desc") list.sort((a,b) => b.price - a.price);
+      else if (val === "rating") list.sort((a,b) => b.rating - a.rating);
+      renderList(list);
+    }
     const saved = localStorage.getItem("vestia_filter");
-    if (saved) {
+    const search = localStorage.getItem("vestia_search");
+    if (search) { currentList = handleSearch(search); localStorage.removeItem("vestia_search"); renderList(currentList); }
+    else if (saved) {
       const btn = document.querySelector(`.filters button[onclick*="${saved}"]`);
-      if (btn) filterProducts(saved, btn);
-      else filterProducts("all", document.querySelector(".filters button"));
+      if (btn) filterCat(saved, btn); else renderList(products);
       localStorage.removeItem("vestia_filter");
-    } else {
-      filterProducts("all", document.querySelector(".filters button"));
-    }
+    } else renderList(products);
   </script>
 </body>
 </html>

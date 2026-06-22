@@ -7,75 +7,92 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+ <div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
+  </div>
+</div>
 
-  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
-
-  <header>
-    <a href="index.html" class="logo">VESTIA</a>
-    <nav>
-      <a href="index.html" class="active">Beranda</a>
-      <a href="products.html">Koleksi</a>
-      <a href="cart.html" class="cart-link">
-        Keranjang <span class="cart-badge" id="cart-count">0</span>
-      </a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-content">
-      <span class="hero-tag">Koleksi 2026</span>
-      <h1>Elevate Your <em>Everyday</em> Style</h1>
-      <p>Fashion premium untuk pria & wanita. Temukan gaya yang mencerminkan dirimu.</p>
-      <div class="hero-buttons">
+  <section class="hero-split">
+    <div class="hero-text">
+      <span class="hero-label">Koleksi Spring 2026</span>
+      <h1>Craft Your <em>Signature</em> Look</h1>
+      <p>Fashion kurasi premium untuk pria & wanita. Temukan pieces yang mendefinisikan gaya unikmu.</p>
+      <div class="hero-btns">
         <a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a>
-        <a href="products.html" class="btn btn-outline">Lihat Promo</a>
+        <a href="products.html" class="btn btn-outline">Lihat Sale →</a>
       </div>
+    </div>
+    <div class="hero-visual">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="Vestia Fashion">
     </div>
   </section>
 
-  <section class="section">
-    <div class="section-header">
-      <span class="label">Kategori</span>
-      <h2>Shop by Style</h2>
-    </div>
-    <div class="categories">
-      <a href="products.html" class="cat-card pria" onclick="localStorage.setItem('vestia_filter','pria')">
-        <span>Pria<small>12+ produk</small></span>
-      </a>
-      <a href="products.html" class="cat-card wanita" onclick="localStorage.setItem('vestia_filter','wanita')">
-        <span>Wanita<small>18+ produk</small></span>
-      </a>
-      <a href="products.html" class="cat-card aksesoris" onclick="localStorage.setItem('vestia_filter','aksesoris')">
-        <span>Aksesoris<small>8+ produk</small></span>
-      </a>
-    </div>
+  <div class="stats-bar">
+    <div class="stat-item"><strong>500+</strong><span>Pelanggan Puas</span></div>
+    <div class="stat-item"><strong>50+</strong><span>Produk Fashion</span></div>
+    <div class="stat-item"><strong>4.8★</strong><span>Rating Rata-rata</span></div>
+    <div class="stat-item"><strong>24 Jam</strong><span>Pengiriman Cepat</span></div>
+  </div>
 
-    <div class="section-header">
-      <span class="label">Unggulan</span>
-      <h2>Produk Pilihan</h2>
-      <p>Kurasi terbaik dari tim stylist Vestia</p>
+  <section class="section">
+    <div class="section-head"><span class="label">Kategori</span><h2>Shop by Category</h2></div>
+    <div class="cat-grid">
+      <a href="products.html" class="cat-tile pria" onclick="localStorage.setItem('vestia_filter','pria')"><div><small>Pria</small><h3>Men's Collection</h3></div></a>
+      <a href="products.html" class="cat-tile wanita" onclick="localStorage.setItem('vestia_filter','wanita')"><div><small>Wanita</small><h3>Women's Collection</h3></div></a>
+      <a href="products.html" class="cat-tile aksesoris" onclick="localStorage.setItem('vestia_filter','aksesoris')"><div><small>Aksesoris</small><h3>Accessories</h3></div></a>
     </div>
-    <div class="grid" id="featured-products"></div>
+    <div class="section-head"><span class="label">Unggulan</span><h2>Produk Pilihan</h2></div>
+    <div class="grid" id="featured"></div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="section-head"><span class="label">Testimonial</span><h2>Apa Kata Pelanggan</h2></div>
+    <div class="testi-grid">
+      <div class="testi-card"><p>Kualitas kemeja linen-nya luar biasa. Packing rapi, pengiriman cepat!</p><div class="testi-author">Sarah Amalia<small>Pelanggan Setia</small></div></div>
+      <div class="testi-card"><p>Blazer navy-nya pas banget! Harga worth it untuk kualitas premium.</p><div class="testi-author">Rizky Pratama<small>Pelanggan Baru</small></div></div>
+      <div class="testi-card"><p>Website mudah dipakai, checkout cepat. Sneakers-nya comfortable!</p><div class="testi-author">Diana Putri<small>Pelanggan Setia</small></div></div>
+    </div>
   </section>
 
   <section class="newsletter">
     <h3>Join the Vestia Club</h3>
-    <p>Dapatkan akses eksklusif ke koleksi baru & diskon 15%</p>
+    <p>Dapatkan diskon 15% — kode: VESTIA15</p>
     <div class="newsletter-form">
       <input type="email" placeholder="Email kamu...">
-      <button onclick="showToast('Terima kasih sudah subscribe! ✓')">Daftar</button>
+      <button onclick="showToast('✓ Terima kasih sudah subscribe!')">Daftar</button>
     </div>
   </section>
 
-  <footer>
-    <div class="footer-logo">VESTIA</div>
-    <p>© 2026 Vestia.</p>
-  </footer>
-
+  <footer><div class="footer-bottom">© 2026 Vestia.</div></footer>
   <script src="app.js"></script>
-  <script>
-    document.getElementById("featured-products").innerHTML =
-      products.slice(0, 3).map(renderProductCard).join("");
-  </script>
+  <script>document.getElementById("featured").innerHTML = products.slice(0,4).map(renderProductCard).join("");</script>
 </body>
 </html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Produk — Vestia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
+  </div>
+</div>
+<body>
+  <!-- PASTE HEADER -->
+  <section class="section" id="detail-content"></section>
+  <section class="section" style="padding-top:0">
+    <div class="section-head"><span class="label">Rekomendasi</span><h2>Produk Terkait</h2></div>
+    <div class="grid" id="related"></div>
+  </section>
+  <footer><div class="footer-bottom">© 2026 Vestia</div></footer>
+  <script src="app.js"></script>
+  <script>
+    const id = parseInt(new URLSearchParams(location.search).get("id"));
+    const p = products.find(x => x.id === id);
+    if (!p) { document.getElementById("detail-content").innerHTML = '<div class="empty-state"><h3>Produk tidak ditemukan</h3><a href="products.html" class="btn btn-primary">Kembali</a></div>'; }
+    else {
+      let selSize = p.sizes[0], selColor = p.colors[0], qty = 1;
+      document.getElementById("detail-content").innerHTML = `
+        <div class="detail-layout">
+          <div class="detail-visual"><img src="${p.image}" alt="${p.name}"></div>
+          <div class="detail-info">
+            <span class="tag">${p.category}</span>
+            <h1>${p.name}</h1>
+            <div class="detail-rating">${renderStars(p.rating)} ${p.rating} (${p.reviews} ulasan)</div>
+            <div class="detail-price">
+              <span class="price">${formatRupiah(p.price)}</span>
+              ${p.originalPrice ? `<span class="price-old">${formatRupiah(p.originalPrice)}</span>` : ""}
+            </div>
+            <p class="detail-desc">${p.description}</p>
+            <div class="option-group"><label>Ukuran</label><div class="option-btns" id="sizes">${p.sizes.map((s,i)=>`<button class="${i===0?'active':''}" onclick="pickSize(this,'${s}')">${s}</button>`).join("")}</div></div>
+            <div class="option-group"><label>Warna</label><div class="option-btns" id="colors">${p.colors.map((c,i)=>`<button class="${i===0?'active':''}" onclick="pickColor(this,'${c}')">${c}</button>`).join("")}</div></div>
+            <div class="option-group"><label>Jumlah</label>
+              <div class="qty-picker">
+                <button onclick="changeQty(-1)">−</button><span id="qty-val">1</span><button onclick="changeQty(1)">+</button>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-dark" onclick="addToCart(${p.id},qty,selSize,selColor)">Tambah ke Keranjang</button>
+              <button class="btn-wish ${isWishlisted(p.id)?'active':''}" onclick="toggleWishlist(${p.id});this.classList.toggle('active')">♥</button>
+            </div>
+          </div>
+        </div>`;
+      document.getElementById("related").innerHTML = products.filter(x => x.category === p.category && x.id !== p.id).slice(0,3).map(renderProductCard).join("");
+      window.pickSize = (el,s) => { document.querySelectorAll("#sizes button").forEach(b=>b.classList.remove("active")); el.classList.add("active"); selSize=s; };
+      window.pickColor = (el,c) => { document.querySelectorAll("#colors button").forEach(b=>b.classList.remove("active")); el.classList.add("active"); selColor=c; };
+      window.changeQty = (d) => { qty=Math.max(1,qty+d); document.getElementById("qty-val").textContent=qty; };
+    }
+  </script>
+</body>
+</html>

@@ -5,129 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — Vestia</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body>
-
-  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
-
-  <header>
-    <a href="index.html" class="logo">VESTIA</a>
-    <nav>
-      <a href="index.html">Beranda</a>
-      <a href="products.html">Koleksi</a>
-      <a href="cart.html" class="cart-link">
-        Keranjang <span class="cart-badge" id="cart-count">0</span>
-      </a>
-    </nav>
-  </header>
-
-  <div class="page-hero">
-    <h1>Checkout</h1>
-    <p>Lengkapi data pengiriman untuk menyelesaikan pesanan</p>
+<div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
   </div>
-
+</div>
+<body>
+  <!-- PASTE HEADER -->
+  <div class="page-hero"><h1>Checkout</h1><p>Lengkapi data & bayar dengan QRIS</p></div>
   <section class="section">
+    <div class="checkout-steps">
+      <div class="step active"><span class="step-num">1</span> Data</div>
+      <div class="step"><span class="step-num">2</span> QRIS</div>
+      <div class="step"><span class="step-num">3</span> Selesai</div>
+    </div>
     <div id="checkout-content"></div>
   </section>
-
-  <footer>
-    <div class="footer-logo">VESTIA</div>
-    <p>© 2026 Vestia.</p>
-  </footer>
-
+  <footer><div class="footer-bottom">© 2026 Vestia</div></footer>
   <script src="app.js"></script>
   <script>
     const container = document.getElementById("checkout-content");
     const cart = getCart();
-
-    if (cart.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <div class="emoji">📦</div>
-          <h3>Tidak ada pesanan</h3>
-          <p>Tambahkan produk ke keranjang terlebih dahulu</p>
-          <a href="products.html" class="btn btn-primary">Belanja Sekarang</a>
-        </div>`;
+    let payMethod = "qris";
+    if (!cart.length) {
+      container.innerHTML = '<div class="empty-state"><div class="emoji">📦</div><h3>Tidak ada pesanan</h3><a href="products.html" class="btn btn-primary">Belanja Dulu</a></div>';
     } else {
-      const subtotal = getCartTotal();
-      const shipping = subtotal >= 500000 ? 0 : 25000;
-      const grandTotal = subtotal + shipping;
-
-      const itemsHtml = cart.map(i => `
-        <div class="line">
-          <span>${i.name} × ${i.qty}</span>
-          <span>${formatRupiah(i.price * i.qty)}</span>
-        </div>
-      `).join("");
-
-      container.innerHTML = `
-        <div class="checkout-layout">
-          <div class="checkout-box">
-            <h3>Data Pengiriman</h3>
-            <form id="checkout-form">
-              <div class="form-group">
-                <label>Nama Lengkap</label>
-                <input type="text" required placeholder="Masukkan nama lengkap">
-              </div>
-              <div class="form-group">
-                <label>Email</label>
-                <input type="email" required placeholder="nama@email.com">
-              </div>
-              <div class="form-group">
-                <label>No. Telepon</label>
-                <input type="tel" required placeholder="08xxxxxxxxxx">
-              </div>
-              <div class="form-group">
-                <label>Alamat Pengiriman</label>
-                <textarea required placeholder="Jl. ..., Kota, Provinsi, Kode Pos"></textarea>
-              </div>
-              <div class="form-group">
-                <label>Metode Pembayaran</label>
-                <select required>
-                  <option value="">— Pilih metode —</option>
-                  <option>Transfer Bank (BCA / Mandiri)</option>
-                  <option>E-Wallet (GoPay / OVO / Dana)</option>
-                  <option>COD (Bayar di Tempat)</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-dark" style="padding:1rem;font-size:0.9rem">
-                Konfirmasi Pesanan
-              </button>
-            </form>
+      const sub = getCartSubtotal(), disc = getDiscount(sub), ship = getShipping(sub), total = sub - disc + ship;
+      window._total = total;
+      container.innerHTML = `<div class="checkout-layout"><div class="checkout-box"><h3>Data Pengiriman</h3>
+        <form id="checkout-form">
+          <div class="form-row"><div class="form-group"><label>Nama</label><input required placeholder="Nama lengkap"></div><div class="form-group"><label>Telepon</label><input type="tel" required placeholder="08xxx"></div></div>
+          <div class="form-group"><label>Email</label><input type="email" required placeholder="email@mail.com"></div>
+          <div class="form-group"><label>Alamat</label><textarea required placeholder="Alamat lengkap"></textarea></div>
+          <h3 style="margin-top:1.5rem">Pembayaran</h3>
+          <div class="payment-options">
+            <div class="payment-option selected" onclick="pickPay('qris',this)"><div class="pay-icon">📱</div><span>QRIS</span></div>
+            <div class="payment-option" onclick="pickPay('transfer',this)"><div class="pay-icon">🏦</div><span>Transfer</span></div>
+            <div class="payment-option" onclick="pickPay('cod',this)"><div class="pay-icon">🚚</div><span>COD</span></div>
+            <div class="payment-option" onclick="pickPay('ewallet',this)"><div class="pay-icon">💳</div><span>E-Wallet</span></div>
           </div>
-
-          <div class="order-sidebar">
-            <h4>Ringkasan Pesanan</h4>
-            ${itemsHtml}
-            <div class="line" style="margin-top:1rem">
-              <span>Subtotal</span>
-              <span>${formatRupiah(subtotal)}</span>
-            </div>
-            <div class="line">
-              <span>Ongkir</span>
-              <span>${shipping === 0 ? "Gratis" : formatRupiah(shipping)}</span>
-            </div>
-            <div class="grand-total">
-              <span>Total</span>
-              <span>${formatRupiah(grandTotal)}</span>
-            </div>
-          </div>
-        </div>`;
-
-      document.getElementById("checkout-form").addEventListener("submit", function(e) {
+          <button type="submit" class="btn btn-dark" style="padding:1rem">Lanjut Bayar →</button>
+        </form></div>
+        <div class="order-sidebar"><h4>Ringkasan</h4>
+          ${cart.map(i=>`<div class="line"><span>${i.name}×${i.qty}</span><span>${formatRupiah(i.price*i.qty)}</span></div>`).join("")}
+          <div class="line" style="margin-top:1rem"><span>Subtotal</span><span>${formatRupiah(sub)}</span></div>
+          ${disc?`<div class="line" style="color:#6fcf97"><span>Diskon</span><span>-${formatRupiah(disc)}</span></div>`:""}
+          <div class="line"><span>Ongkir</span><span>${ship===0?"Gratis":formatRupiah(ship)}</span></div>
+          <div class="grand-total"><span>Total</span><span>${formatRupiah(total)}</span></div>
+        </div></div>`;
+      window.pickPay = (m,el) => { payMethod=m; document.querySelectorAll(".payment-option").forEach(o=>o.classList.remove("selected")); el.classList.add("selected"); };
+      document.getElementById("checkout-form").addEventListener("submit", e => {
         e.preventDefault();
-        localStorage.removeItem("vestia_cart");
-        updateCartBadge();
-        container.innerHTML = `
-          <div class="success-box">
-            <div class="check">✓</div>
-            <h2>Pesanan Berhasil!</h2>
-            <p>Terima kasih telah berbelanja di Vestia.</p>
-            <p style="margin-top:0.5rem">Konfirmasi pesanan akan dikirim ke email kamu.</p>
-            <a href="index.html" class="btn btn-primary" style="margin-top:2rem;display:inline-block">
-              Kembali ke Beranda
-            </a>
-          </div>`;
+        const oid = generateOrderId();
+        if (payMethod === "qris") showQrisPayment(oid, window._total);
+        else confirmQrisPayment(oid);
       });
     }
   </script>

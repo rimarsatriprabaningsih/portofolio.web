@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist — Vestia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
+  </div>
+</div>
+<body>
+  <!-- PASTE HEADER -->
+  <div class="page-hero"><h1>Wishlist</h1><p>Produk favorit kamu</p></div>
+  <section class="section"><div class="grid" id="wishlist-grid"></div></section>
+  <footer><div class="footer-bottom">© 2026 Vestia</div></footer>
+  <script src="app.js"></script>
+  <script>
+    function renderWishlist() {
+      const list = getWishlist().map(id => products.find(p => p.id === id)).filter(Boolean);
+      const el = document.getElementById("wishlist-grid");
+      if (!list.length) el.innerHTML = '<div class="empty-state"><div class="emoji">♥</div><h3>Wishlist kosong</h3><p>Simpan produk favorit dengan klik ♥</p><a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a></div>';
+      else el.innerHTML = list.map(renderProductCard).join("");
+    }
+    renderWishlist();
+  </script>
+</body>
+</html>

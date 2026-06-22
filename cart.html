@@ -6,91 +6,67 @@
   <title>Keranjang — Vestia</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-  <div class="promo-strip">✦ Gratis ongkir untuk pembelian di atas Rp 500.000 ✦</div>
-
-  <header>
-    <a href="index.html" class="logo">VESTIA</a>
-    <nav>
-      <a href="index.html">Beranda</a>
-      <a href="products.html">Koleksi</a>
-      <a href="cart.html" class="active cart-link">
-        Keranjang <span class="cart-badge" id="cart-count">0</span>
-      </a>
-    </nav>
-  </header>
-
-  <div class="page-hero">
-    <h1>Keranjang Belanja</h1>
-    <p>Review pesananmu sebelum checkout</p>
+<div class="marquee-wrap"><div class="marquee-track">
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+  <span>✦ Gratis ongkir pembelian di atas Rp 500.000</span>
+  <span>✦ Koleksi Baru 2026</span>
+  <span>✦ Kode VESTIA15 diskon 15%</span>
+</div></div>
+<header>
+  <a href="index.html" class="logo">VESTIA</a>
+  <div class="search-bar"><input type="text" placeholder="Cari produk..." oninput="handleGlobalSearch(this.value)"></div>
+  <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <nav class="nav-links">
+    <a href="index.html">Beranda</a>
+    <a href="products.html">Koleksi</a>
+    <a href="wishlist.html" class="nav-icon">♥ Wishlist <span class="badge-count" id="wish-count">0</span></a>
+    <a href="cart.html" class="nav-icon">🛒 Keranjang <span class="badge-count" id="cart-count">0</span></a>
+    <button class="btn-login" onclick="openLogin()">Masuk</button>
+  </nav>
+</header>
+<div id="login-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeLogin()">×</button>
+    <h3>Selamat Datang</h3>
+    <p>Masuk ke akun Vestia-mu</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" required placeholder="nama@email.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" required placeholder="••••••"></div>
+      <button type="submit" class="btn btn-dark" style="margin-top:.5rem">Masuk</button>
+    </form>
   </div>
-
-  <section class="section">
-    <div id="cart-content"></div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">VESTIA</div>
-    <p>© 2026 Vestia.</p>
-  </footer>
-
+</div>
+<body>
+  <!-- PASTE HEADER -->
+  <div class="page-hero"><h1>Keranjang Belanja</h1><p>Review pesanan sebelum checkout</p></div>
+  <section class="section"><div id="cart-content"></div></section>
+  <footer><div class="footer-bottom">© 2026 Vestia</div></footer>
   <script src="app.js"></script>
   <script>
     function renderCart() {
-      const cart = getCart();
-      const container = document.getElementById("cart-content");
-
-      if (cart.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="emoji">🛍️</div>
-            <h3>Keranjang masih kosong</h3>
-            <p>Yuk, temukan fashion favoritmu di koleksi kami</p>
-            <a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a>
-          </div>`;
-        return;
-      }
-
-      const itemsHtml = cart.map(item => `
+      const cart = getCart(), el = document.getElementById("cart-content");
+      if (!cart.length) { el.innerHTML = '<div class="empty-state"><div class="emoji">🛍️</div><h3>Keranjang kosong</h3><p>Yuk, mulai belanja!</p><a href="products.html" class="btn btn-primary">Jelajahi Koleksi</a></div>'; return; }
+      const sub = getCartSubtotal(), disc = getDiscount(sub), ship = getShipping(sub), total = sub - disc + ship;
+      el.innerHTML = `<div class="cart-layout"><div>${cart.map(i=>`
         <div class="cart-item">
-          <div class="emoji">${item.image}</div>
-          <div class="info">
-            <div class="item-cat">${item.category}</div>
-            <h4>${item.name}</h4>
-            <div class="item-price">${formatRupiah(item.price)}</div>
-          </div>
-          <div class="qty-control">
-            <button onclick="updateQty(${item.id}, -1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="updateQty(${item.id}, 1)">+</button>
-          </div>
-          <button class="btn-remove" onclick="removeFromCart(${item.id})">Hapus</button>
-        </div>
-      `).join("");
-
-      const total = getCartTotal();
-
-      container.innerHTML = itemsHtml + `
-        <div class="cart-summary">
-          <div class="row">
-            <span>Subtotal (${cart.reduce((s, i) => s + i.qty, 0)} item)</span>
-            <span>${formatRupiah(total)}</span>
-          </div>
-          <div class="row">
-            <span>Ongkir</span>
-            <span>${total >= 500000 ? "Gratis" : "Rp 25.000"}</span>
-          </div>
-          <div class="total">
-            <span>Total</span>
-            <span>${formatRupiah(total >= 500000 ? total : total + 25000)}</span>
-          </div>
-          <a href="checkout.html" class="btn btn-dark" style="display:block;text-decoration:none;padding:1rem">
-            Lanjut Checkout →
-          </a>
-        </div>`;
+          <img src="${i.image}" alt="${i.name}" class="thumb">
+          <div class="info"><h4>${i.name}</h4><div class="variant">${i.size||""} ${i.color||""}</div><div class="item-price">${formatRupiah(i.price)}</div></div>
+          <div class="qty-control"><button onclick="updateQty('${i.key}',-1)">−</button><span>${i.qty}</span><button onclick="updateQty('${i.key}',1)">+</button></div>
+          <button class="btn-remove" onclick="removeFromCart('${i.key}')">Hapus</button>
+        </div>`).join("")}</div>
+        <div class="cart-sidebar">
+          <h3>Ringkasan</h3>
+          <div class="coupon-box"><input type="text" id="coupon-input" placeholder="Kode kupon"><button onclick="applyCoupon(document.getElementById('coupon-input').value)">Apply</button></div>
+          <p class="coupon-hint">Coba: VESTIA15 (diskon 15%)</p>
+          <div class="summary-row"><span>Subtotal</span><span>${formatRupiah(sub)}</span></div>
+          ${disc ? `<div class="summary-row discount"><span>Diskon</span><span>-${formatRupiah(disc)}</span></div>` : ""}
+          <div class="summary-row"><span>Ongkir</span><span>${ship===0?"Gratis":formatRupiah(ship)}</span></div>
+          <div class="summary-total"><span>Total</span><span>${formatRupiah(total)}</span></div>
+          <a href="checkout.html" class="btn btn-dark" style="display:block;text-align:center;text-decoration:none;padding:1rem">Checkout →</a>
+        </div></div>`;
     }
-
     renderCart();
   </script>
 </body>
